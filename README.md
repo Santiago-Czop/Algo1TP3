@@ -1,6 +1,14 @@
 # Algo1TP3
 Trabajo Práctico 3 - Algoritmos y Programación 1
 
+https://git-scm.com/downloads
+
+Descargar git. Git es la herramienta. GitHub es el servicio.
+
+https://desktop.github.com/
+
+Opcional, descargar GitHub Desktop. No sé para qué sirve pero existe.
+
 git clone https://github.com/Santiago-Czop/Algo1TP3.git
 
 Create a local copy of a remote repository
