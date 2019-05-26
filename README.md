@@ -19,6 +19,11 @@ git pull
 Update local repository to the newest commit
 Actualizar el repositorio local.
 
+git add [file-name.txt]
+
+Add a file to the staging area
+Añadir un archivo en específico con el cual jamás trabajaste.
+
 git add -A
 
 Add all new and changed files to the staging area
