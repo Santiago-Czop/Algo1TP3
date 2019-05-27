@@ -10,5 +10,8 @@ class Pluma:
     def cambiar_grosor(self, grosor):
         return Pluma(self.color, grosor, self.estado)
 
+    def cambiar_estado(self, estado):
+        return Pluma(self.color, self.grosor, estado)
+
     def alternar_estado(self):
         return Pluma(self.color, self.grosor, not self.estado)

@@ -30,4 +30,8 @@ class Tortuga:
     def alternar_pluma(self):
         self.pluma = self.pluma.alternar_estado()
 
+    def avanzar(self, accion, profundidad, factor):
+        if 
+
+
 

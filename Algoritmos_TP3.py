@@ -1,11 +1,17 @@
 from sys import argv
 from csv import reader
 from vector import Vector
+from tortuga import Tortuga
+import math
+import copy
 
 PROGRAMA = 0
 ARCHIVO_SL = 1
 ITERACIONES = 2
 ARCHIVO_SVG = 3
+
+DISTANCIA = 100
+FACTOR_EXPANSION = 1.0
 
 class ListaEnlazada:
     #Sirve de algo esta clase o la borramos?
@@ -66,6 +72,15 @@ def main():
     except Exception as e:
         print(e)
         return
+
+    acciones = {
+        "+" : angulo,
+        "-" : -angulo,
+        "|" : math.pi,
+        "F" : DISTANCIA,
+        "f" : 
+    }
+
     resultado = obtener_resultado(axioma, reglas, int(argv[ITERACIONES]))
     escribir_svg(resultado)
 
@@ -73,11 +88,11 @@ def validar_parametros():
     if len(argv) != 4:
         raise IndexError(f"El programa {argv[PROGRAMA]} debe recibir 3 parámetros.")
     elif argv[ARCHIVO_SL][-3:].lower() != ".sl":
-        raise Exception("El primer parámetro debe ser un archivo .sl")
+        raise Exception("El primer parámetro debe ser el nombre de un archivo .sl")
     elif not argv[ITERACIONES].isdigit():
         raise TypeError("El segundo parámetro debe ser un número entero mayor o igual a cero.")
     elif argv[ARCHIVO_SVG][-4:].lower() != ".svg":
-        raise Exception("El tercer parámetro debe ser un archivo .svg")
+        raise Exception("El tercer parámetro debe ser el nombre de un archivo .svg")
 
 def cargar_archivo(ruta_archivo):
     reglas = {}
@@ -85,7 +100,7 @@ def cargar_archivo(ruta_archivo):
         with open(ruta_archivo) as archivo:
             lector = reader(archivo, delimiter = " ")
             try:
-                angulo = float(archivo.readline().rstrip())
+                angulo = float(archivo.readline().rstrip()) * math.pi / 180
             except ValueError:
                 raise ValueError("El valor del ángulo no es válido.")
             axioma = archivo.readline().rstrip()
@@ -111,7 +126,37 @@ def obtener_resultado(cadena, reglas, cantidad):
         resultado = obtener_resultado(resultado, reglas, cantidad)
         return resultado
 
-def recorrer_lista(lista):
+def recorrer_lista(instrucciones, dict_acciones):
+    coordenada_min = Vector()
+    coordenada_max = Vector()
+
+
+    pila_de_tortugas = list()
+    pila_de_tortugas.append(Tortuga())
+
+    tortuga_tope = pila_de_tortugas[-1]
+    profundidad = len(pila_de_tortugas)
+
+    for c in lista:
+        if c == "[":
+            nueva_tortuga = copy.deepcopy(tortuga_tope)
+            pila_de_tortugas.append(nueva_tortuga)
+            tortuga_tope = pila_de_tortugas[-1]
+            profundidad = len(pila_de_tortugas)
+        elif c == "]":
+            pila_de_tortugas.pop()
+            tortuga_tope = pila_de_tortugas[-1]
+            profundidad = len(pila_de_tortugas)
+        elif c == "F":
+            tortuga_tope.avanzar(dict_acciones[c])
+        elif c == "f":
+            tortuga_tope.levantar_pluma()
+            tortuga_tope.avanzar(DISTANCIA*FACTOR_EXPANSION*profundidad))
+        elif c in "+-|":
+            tortuga_tope.girar(dict_acciones[c])
+        elif c 
+        
+
     """
     xmin = 0
     xmax = 0
