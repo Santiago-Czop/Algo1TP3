@@ -1,5 +1,6 @@
 from sys import argv
 from csv import reader
+from vector import Vector
 
 PROGRAMA = 0
 ARCHIVO_SL = 1
@@ -7,6 +8,9 @@ ITERACIONES = 2
 ARCHIVO_SVG = 3
 
 class ListaEnlazada:
+    #Sirve de algo esta clase o la borramos?
+
+    """
     def __init__(self):
         self.prim = None #AXIOMA
 
@@ -37,36 +41,23 @@ class ListaEnlazada:
     def __iter__(self):
         #TODO Hacer el iterador     
         return
+    """
 
 class _Nodo:
     def __init__(self, dato, prox):
         self.dato = dato
         self.prox = prox
 
-class Tortuga:
-    def __init():
-
-class Vector:
-    def __init__():
-        self.x
-        self.y
-
-    def __add__(self, norma, angulo)
-        return Vector() #Operar
-
-class Pluma:
-    def __init__():
-        self.estado
-        self.grosor
-        self.color
-
 class Pila:
-    def __init__():
+    #Preguntar si implementamos la nuestra o está permitido usar listas
+    def __init__(self):
+        self.prim = None
 
 class Trazo:
-    def __init__():
-        self.grosor
-        self.vector_inicial
+    #Preguntar como trabajar bien el viewBox
+    def __init__(self):
+        self.grosor = 1
+        self.vector_inicial = Vector()
 
 def main():
     try:
@@ -76,7 +67,7 @@ def main():
         print(e)
         return
     resultado = obtener_resultado(axioma, reglas, int(argv[ITERACIONES]))
-    escribir_svg()
+    escribir_svg(resultado)
 
 def validar_parametros():
     if len(argv) != 4:
@@ -120,7 +111,8 @@ def obtener_resultado(cadena, reglas, cantidad):
         resultado = obtener_resultado(resultado, reglas, cantidad)
         return resultado
 
-def recorrer_lista(lista)
+def recorrer_lista(lista):
+    """
     xmin = 0
     xmax = 0
     ymin = 0
@@ -143,20 +135,26 @@ def recorrer_lista(lista)
         calcular si es nuevo maximo o minimo
         guardar_informacion_trazo
         cambiar_posicion_tortuga = posicion_nueva
+    """
 
 def escribir_svg(lista):
+    """
     crear_Viewbox()
     pila_de_tortugas Pila()#TODO len
     trazos = Lista_De_trazos #TODO Crear clase trazo
     recorrer_lista(lista, pila)
     for trazo in trazos:
         dibujar_linea()
+    """
      
-def calcular_posicion_nueva()
+def calcular_posicion_nueva():
+    """
     NORMA_BASE = Cte
     norma_tortuga = norma_base/len_pila * factor de achicamiento
     posicion_original = posicion_tortuga
     posicion_nueva = posicion_original + (x= sin alfa * norma_tortuga, y= cos alfa * norma tortuga)
     return posicion_nueva
+    
+"""
 
 main()
