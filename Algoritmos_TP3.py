@@ -2,6 +2,7 @@ from sys import argv
 from csv import reader
 from vector import Vector
 from tortuga import Tortuga
+from pila import Pila
 import math
 import copy
 
@@ -53,11 +54,6 @@ class _Nodo:
     def __init__(self, dato, prox):
         self.dato = dato
         self.prox = prox
-
-class Pila:
-    #Preguntar si implementamos la nuestra o está permitido usar listas
-    def __init__(self):
-        self.prim = None
 
 class Trazo:
     #Preguntar como trabajar bien el viewBox
