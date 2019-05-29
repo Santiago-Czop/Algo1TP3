@@ -10,7 +10,7 @@ ARCHIVO_SL = 1
 ITERACIONES = 2
 ARCHIVO_SVG = 3
 
-DISTANCIA = 100
+DISTANCIA_BASE = 100
 FACTOR_EXPANSION = 1.0
 
 class ListaEnlazada:
@@ -73,16 +73,17 @@ def main():
         print(e)
         return
 
-    acciones = {
+    codificaciones = {
         "+" : angulo,
         "-" : -angulo,
         "|" : math.pi,
-        "F" : DISTANCIA,
-        "f" : 
     }
 
     resultado = obtener_resultado(axioma, reglas, int(argv[ITERACIONES]))
-    escribir_svg(resultado)
+
+    trazos, coordenada_min, coordenada_max = analizar_secuencia(instrucciones, codificaciones)
+
+    escribir_svg(trazos, coordenada_min, coordenada_max)
 
 def validar_parametros():
     if len(argv) != 4:
@@ -126,80 +127,82 @@ def obtener_resultado(cadena, reglas, cantidad):
         resultado = obtener_resultado(resultado, reglas, cantidad)
         return resultado
 
-def recorrer_lista(instrucciones, dict_acciones):
+def analizar_secuencia(instrucciones, codificaciones):
     coordenada_min = Vector()
     coordenada_max = Vector()
 
+    pila_de_tortugas = Pila()
+    pila_de_tortugas.apilar(Tortuga())
 
-    pila_de_tortugas = list()
-    pila_de_tortugas.append(Tortuga())
-
-    tortuga_tope = pila_de_tortugas[-1]
+    tortuga_tope = pila_de_tortugas.ver_tope()
     profundidad = len(pila_de_tortugas)
+
+    trazos = set()
 
     for c in lista:
         if c == "[":
-            nueva_tortuga = copy.deepcopy(tortuga_tope)
-            pila_de_tortugas.append(nueva_tortuga)
-            tortuga_tope = pila_de_tortugas[-1]
+            nueva_tortuga = tortuga_tope.clonar()
+            pila_de_tortugas.apilar(nueva_tortuga)
+
+            tortuga_tope = pila_de_tortugas.ver_tope()
             profundidad = len(pila_de_tortugas)
         elif c == "]":
-            pila_de_tortugas.pop()
-            tortuga_tope = pila_de_tortugas[-1]
+            pila_de_tortugas.desapilar()
+
+            tortuga_tope = pila_de_tortugas.ver_tope()
             profundidad = len(pila_de_tortugas)
         elif c == "F":
-            tortuga_tope.avanzar(dict_acciones[c])
+            ultima_posicion = tortuga_tope.conseguir_posicion() #Preguntar a Essaya para que sirven los métodos de tipo "class.getA()"
+
+            tortuga_tope.avanzar( DISTANCIA_BASE * (FACTOR_EXPANSION ** profundidad) )
+
+            nueva_posicion = tortuga_tope.conseguir_posicion()
+
+            coordenada_min = calcular_min(coordenada_min, nueva_posicion)
+            coordenada_max = calcular_max(coordenada_max, nueva_posicion)
+
+            nuevo_trazo = Trazo(ultima_posicion, nueva_posicion, tortuga_tope.conseguir_grosor(), tortuga_tope.conseguir_color())
+
+            trazos.add(nuevo_trazo)
         elif c == "f":
             tortuga_tope.levantar_pluma()
-            tortuga_tope.avanzar(DISTANCIA*FACTOR_EXPANSION*profundidad))
+            tortuga_tope.avanzar(DISTANCIA_BASE * (FACTOR_EXPANSION ** profundidad))
+            tortuga_tope.bajar_pluma()
         elif c in "+-|":
-            tortuga_tope.girar(dict_acciones[c])
-        elif c 
+            tortuga_tope.girar(codificaciones[c])
         
+    return trazos, coordenada_min + Vector(-50, -50), coordenada_max + Vector(50, 50)
 
-    """
-    xmin = 0
-    xmax = 0
-    ymin = 0
-    ymax = 0
+def calcular_min(vectorA, vectorB):
+    vectores = (vectorA, vectorB)
+    x_min = min(vectores, key=lambda v: v[0])
+    y_min = min(vectores, key=lambda v: v[1])
+
+    return Vector(x_min, y_min)
+
+def calcular_max(vectorA, vectorB):
+    vectores = (vectorA, vectorB)
+    x_max = max(vectores, key=lambda v: v[0])
+    y_max = max(vectores, key=lambda v: v[1]) 
+
+    return Vector(x_max, y_max)
+
+def escribir_svg(trazos, coord_min, coord_max):
     
-    #TODO Crear clase vector para facilitar
-
-    pila_con_posiciones_donde_aparecen_tortugas
-
-    for nodo in lista:
-        #PROCESAMIENTO
-        if nodo in "[]":
-            apilar_o_desapilar
-            continue
-        if nodo in "+-":
-            girar_tortuga
-            continue
-        tortuga = leer_tope_pila  
-        posicion nueva = calcular_posicion_nueva(nodo, len_pila)
-        calcular si es nuevo maximo o minimo
-        guardar_informacion_trazo
-        cambiar_posicion_tortuga = posicion_nueva
-    """
-
-def escribir_svg(lista):
-    """
     crear_Viewbox()
-    pila_de_tortugas Pila()#TODO len
+    pila_de_tortugas = Pila()#TODO len
     trazos = Lista_De_trazos #TODO Crear clase trazo
     recorrer_lista(lista, pila)
     for trazo in trazos:
         dibujar_linea()
-    """
+    
      
 def calcular_posicion_nueva():
-    """
+    
     NORMA_BASE = Cte
     norma_tortuga = norma_base/len_pila * factor de achicamiento
     posicion_original = posicion_tortuga
     posicion_nueva = posicion_original + (x= sin alfa * norma_tortuga, y= cos alfa * norma tortuga)
     return posicion_nueva
     
-"""
-
 main()

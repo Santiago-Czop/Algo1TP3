@@ -30,8 +30,10 @@ class Tortuga:
     def alternar_pluma(self):
         self.pluma = self.pluma.alternar_estado()
 
-    def avanzar(self, accion, profundidad, factor):
-        if 
+    def clonar(self):
+        return Tortuga(self.posicion, self.orientacion, self.pluma)
+        #Aca self.grosor, self.color y self.pluma, apuntarian a exactamente el mismo valor?
+        #Idem en clonar de tortuga. Tener cuidado y venir aca si surgen errores al ejecutar
 
 
 
