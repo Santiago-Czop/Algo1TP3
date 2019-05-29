@@ -1,7 +1,9 @@
 from sys import argv
-from csv import reader
+from csv import reader, writer
 from vector import Vector
 from tortuga import Tortuga
+from pila import Pila
+from trazo import Trazo
 import math
 import copy
 
@@ -12,58 +14,6 @@ ARCHIVO_SVG = 3
 
 DISTANCIA_BASE = 100
 FACTOR_EXPANSION = 1.0
-
-class ListaEnlazada:
-    #Sirve de algo esta clase o la borramos?
-
-    """
-    def __init__(self):
-        self.prim = None #AXIOMA
-
-    def append(self, dato, prox = None):
-        actual = self.prim
-        nodo = _Nodo(dato)
-
-        if not actual:
-            self.prim = nodo
-        else:
-            while actual.prox:
-                actual = actual.prox
-            
-            actual.prox = nodo
-        
-    def reemplazar(self, anterior, nodo, nuevo_dato):
-        nuevo_bloque = ListaEnlazada()
-
-        for c in nuevo_dato:
-            nuevo_bloque.append(c)
-
-        if not anterior:
-            self.prim = nuevo_bloque[0]
-        else:
-            anterior.prox = nuevo_bloque[0]
-        #TODO Hacer el reemplazador
-
-    def __iter__(self):
-        #TODO Hacer el iterador     
-        return
-    """
-
-class _Nodo:
-    def __init__(self, dato, prox):
-        self.dato = dato
-        self.prox = prox
-
-class Pila:
-    #Preguntar si implementamos la nuestra o está permitido usar listas
-    def __init__(self):
-        self.prim = None
-
-class Trazo:
-    #Preguntar como trabajar bien el viewBox
-    def __init__(self):
-        self.grosor = 1
-        self.vector_inicial = Vector()
 
 def main():
     try:
@@ -81,9 +31,9 @@ def main():
 
     resultado = obtener_resultado(axioma, reglas, int(argv[ITERACIONES]))
 
-    trazos, coordenada_min, coordenada_max = analizar_secuencia(instrucciones, codificaciones)
+    trazos, coordenada_min, coordenada_max = analizar_secuencia(resultado, codificaciones)
 
-    escribir_svg(trazos, coordenada_min, coordenada_max)
+    crear_svg(argv[ARCHIVO_SVG], trazos, coordenada_min, coordenada_max)
 
 def validar_parametros():
     if len(argv) != 4:
@@ -139,7 +89,7 @@ def analizar_secuencia(instrucciones, codificaciones):
 
     trazos = set()
 
-    for c in lista:
+    for c in instrucciones:
         if c == "[":
             nueva_tortuga = tortuga_tope.clonar()
             pila_de_tortugas.apilar(nueva_tortuga)
@@ -187,22 +137,11 @@ def calcular_max(vectorA, vectorB):
 
     return Vector(x_max, y_max)
 
-def escribir_svg(trazos, coord_min, coord_max):
-    
-    crear_Viewbox()
-    pila_de_tortugas = Pila()#TODO len
-    trazos = Lista_De_trazos #TODO Crear clase trazo
-    recorrer_lista(lista, pila)
-    for trazo in trazos:
-        dibujar_linea()
-    
-     
-def calcular_posicion_nueva():
-    
-    NORMA_BASE = Cte
-    norma_tortuga = norma_base/len_pila * factor de achicamiento
-    posicion_original = posicion_tortuga
-    posicion_nueva = posicion_original + (x= sin alfa * norma_tortuga, y= cos alfa * norma tortuga)
-    return posicion_nueva
-    
+def crear_svg(ruta_archivo, trazos, coord_min, coord_max):
+    with open(ruta_archivo, 'w') as archivo:
+        archivo.write(f'<svg viewBox="{coord_min[0]} {coord_min[1]} {coord_max[0] - coord_min[0]} {coord_max[1] - coord_min[1]}" xmlns="http://www.w3.org/2000/svg">' + "\n")
+        for trazo in trazos:
+            archivo.write(f'<line x1="{trazo.coord_inicial[0]}" y1="{trazo.coord_inicial[1]}" x2="{trazo.coord_final[0]}" y2="{trazo.coord_final[1]}" stroke-width="{trazo.grosor}" stroke="{trazo.color}" />' + "\n")
+        archivo.write('</svg>' + "\n")
+
 main()
