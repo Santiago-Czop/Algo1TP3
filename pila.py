@@ -15,7 +15,6 @@ class Pila:
 			return
 		return self.items.pop()
 
-
 	def esta_vacia(self):
 		"""Devuelve True si la pila está vacía. De lo contrario, devuelve False."""
 		return len(self.items) == 0
