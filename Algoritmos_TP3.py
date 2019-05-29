@@ -1,5 +1,5 @@
 from sys import argv
-from csv import reader
+from csv import reader, writer
 from vector import Vector
 from tortuga import Tortuga
 from pila import Pila
@@ -78,7 +78,8 @@ def main():
     }
 
     resultado = obtener_resultado(axioma, reglas, int(argv[ITERACIONES]))
-    escribir_svg(resultado)
+    #Agregar las creación de las coordenadas
+    crear_svg(argv[ARCHIVO_SVG], coordenadas, x_min, x_max, y_min, y_max)
 
 def validar_parametros():
     if len(argv) != 4:
@@ -178,7 +179,7 @@ def recorrer_lista(instrucciones, dict_acciones):
         cambiar_posicion_tortuga = posicion_nueva
     """
 
-def escribir_svg(lista):
+#def escribir_svg(lista):
     """
     crear_Viewbox()
     pila_de_tortugas Pila()#TODO len
@@ -197,5 +198,12 @@ def calcular_posicion_nueva():
     return posicion_nueva
     
 """
+
+def crear_svg(ruta_archivo, trazos, x_min, x_max, y_min, y_max):
+    with open(ruta_archivo, 'w') as archivo:
+        archivo.write(f'<svg viewBox="{x_min} {y_min} {x_max - x_min} {y_max - y_min}" xmlns="http://www.w3.org/2000/svg">' + "\n")
+        for trazo in trazos:
+            archivo.write(f'<line x1="{trazo.vector_inicial.coordenadas[0]}" y1="{trazo.vector_inicial.coordenadas[1]}" x2="{trazo.vector_final.coordenadas[0]}" y2="{trazo.vector_final.coordenadas[1]}" stroke-width="{trazo.grosor}" stroke="{trazo.color}" />' + "\n")
+        archivo.write('</svg>' + "\n")
 
 main()
