@@ -2,7 +2,7 @@ import math
 
 class Vector:
     def __init__(self, *coordenadas):
-        self.coordenadas = coordenadas if len(coordenadas) > 0 else (0, 0)
+        self.coordenadas = tuple(coordenadas) if len(coordenadas) > 0 else (0, 0)
     
     def __add__(self, vector):
         """ Devuelve la suma de self y vector."""

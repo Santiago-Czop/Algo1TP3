@@ -124,16 +124,14 @@ def analizar_secuencia(instrucciones, codificaciones):
     return trazos, coordenada_min + Vector(-50, -50), coordenada_max + Vector(50, 50)
 
 def calcular_min(vectorA, vectorB):
-    vectores = (vectorA, vectorB)
-    x_min = min(vectores, key=lambda v: v[0])
-    y_min = min(vectores, key=lambda v: v[1])
+    x_min = min(vectorA[0], vectorB[0])
+    y_min = min(vectorA[1], vectorB[1])
 
     return Vector(x_min, y_min)
 
 def calcular_max(vectorA, vectorB):
-    vectores = (vectorA, vectorB)
-    x_max = max(vectores, key=lambda v: v[0])
-    y_max = max(vectores, key=lambda v: v[1]) 
+    x_max = max(vectorA[0], vectorB[0])
+    y_max = max(vectorA[1], vectorB[1]) 
 
     return Vector(x_max, y_max)
 
