@@ -25,6 +25,6 @@ class Pila:
 			return
 		return self.items[-1]
 
-	def len(self):
+	def __len__(self):
 		"""Devuelve la cantidad de elementos de una pila."""
 		return len(self.items)
