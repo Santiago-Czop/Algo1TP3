@@ -27,6 +27,7 @@ class Pila:
 
 	def ver_tope(self):
 		"""Devuelve el elemento que se encuentra en el tope de la pila."""
+<<<<<<< HEAD
 		return self.tope.dato
 
 	def __len__(self):
@@ -39,3 +40,12 @@ class _Nodo:
 	def __init__(self, dato, prox = None):
 		self.dato = dato
 		self.prox = prox
+=======
+		if self.esta_vacia():
+			return
+		return self.items[-1]
+
+	def __len__(self):
+		"""Devuelve la cantidad de elementos de una pila."""
+		return len(self.items)
+>>>>>>> aa8d87784114dd33bb6fa01011fd4bd9cfde4803
