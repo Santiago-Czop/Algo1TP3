@@ -1,5 +1,5 @@
-from .vector import Vector
-from .pluma import Pluma
+from vector import Vector
+from pluma import Pluma
 import math
 
 class Tortuga:
@@ -8,7 +8,7 @@ class Tortuga:
         self.orientacion = orientacion
         self.pluma = pluma
 
-    def mover(self, distancia):
+    def avanzar(self, distancia):
         avance = Vector( math.cos(self.orientacion) * distancia, math.sin(self.orientacion) * distancia )
         self.posicion = self.posicion + avance
         
@@ -34,6 +34,16 @@ class Tortuga:
         return Tortuga(self.posicion, self.orientacion, self.pluma)
         #Aca self.grosor, self.color y self.pluma, apuntarian a exactamente el mismo valor?
         #Idem en clonar de tortuga. Tener cuidado y venir aca si surgen errores al ejecutar
+
+    def conseguir_posicion(self):
+        return self.posicion
+
+    def conseguir_color(self):
+        return self.pluma.color
+
+    def conseguir_grosor(self):
+        return self.pluma.grosor
+
 
 
 
