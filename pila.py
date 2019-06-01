@@ -1,8 +1,8 @@
 class Pila:
-	"""Representa una pila con los métodos: apilar, desapilar, esta_vacia y ver_tope."""
+	"""Representa una pila con los métodos: apilar, desapilar, esta_vacia, ver_tope y len."""
 
 	def __init__(self):
-		"""Crea una pila vacía."""
+		"""Crea una pila vacía con los atributos tope y len."""
 		self.tope = None
 		self.len = 0
 
@@ -13,7 +13,7 @@ class Pila:
 		self.tope = nodo
 
 	def desapilar(self):
-		"""Desapila el elemento que se encuentra en el tope de la pila y lo devuelve."""
+		"""Desapila el elemento que se encuentra en el tope de la pila y lo devuelve. Si la pila está vacía, se muestra un mensaje."""
 		if self.esta_vacia():
 			raise EmptyStack("La pila no tiene elementos.")
 		self.len -= 1
@@ -30,6 +30,7 @@ class Pila:
 		return self.tope.dato
 
 	def __len__(self):
+		"""Devuelve la cantidad de elementos que se encuentran en la pila."""
 		return self.len
 
 class EmptyStack(Exception):
