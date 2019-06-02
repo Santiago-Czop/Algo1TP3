@@ -3,7 +3,7 @@ from pluma import Pluma
 import math
 
 class Tortuga:
-    def __init__(self, posicion=Vector(), orientacion=0.0, pluma=Pluma()):
+    def __init__(self, posicion=Vector(), orientacion=3*math.pi/2, pluma=Pluma()):
         self.posicion = posicion
         self.orientacion = orientacion
         self.pluma = pluma
