@@ -7,13 +7,14 @@ from trazo import Trazo
 import math
 import copy
 
+#Indices
 PROGRAMA = 0
 ARCHIVO_SL = 1
 ITERACIONES = 2
 ARCHIVO_SVG = 3
 
-DISTANCIA_BASE = 100
-FACTOR_EXPANSION = 1.0
+DISTANCIA_BASE = 100 #Distancia avanzada por la primer tortuga
+FACTOR_EXPANSION = 1.0 #Porcentaje como decimal de incremento o disminución de la distancia avanzada por cada tortuga apilada
 
 def main():
     """Ejecución del programa.
@@ -91,6 +92,10 @@ def obtener_resultado(cadena, reglas, cantidad):
     return resultado
 
 def analizar_secuencia(instrucciones, codificaciones):
+    """ Recibe un string con instrucciones y un diccionario que contiene la codificación para algunas instrucciones variables. 
+    Devuelve un set de trazos correspondientes al análisis del string, la distancia máxima y la distancia mínima con la que ha de crearse
+    el svg.
+    """
     coordenada_min = Vector()
     coordenada_max = Vector()
 
@@ -115,7 +120,7 @@ def analizar_secuencia(instrucciones, codificaciones):
             tortuga_tope = pila_de_tortugas.ver_tope()
             profundidad = len(pila_de_tortugas)
         elif c == "F":
-            ultima_posicion = tortuga_tope.conseguir_posicion() #Preguntar a Essaya para que sirven los métodos de tipo "class.getA()"
+            ultima_posicion = tortuga_tope.conseguir_posicion()
 
             tortuga_tope.avanzar( DISTANCIA_BASE * (FACTOR_EXPANSION ** profundidad) )
 
@@ -137,12 +142,14 @@ def analizar_secuencia(instrucciones, codificaciones):
     return trazos, coordenada_min + Vector(-50, -50), coordenada_max + Vector(50, 50)
 
 def calcular_min(vectorA, vectorB):
+    """Recibe dos vectores y devuelve un vector con las mínimas componentes presentes en los dos vectores."""
     x_min = min(vectorA[0], vectorB[0])
     y_min = min(vectorA[1], vectorB[1])
 
     return Vector(x_min, y_min)
 
 def calcular_max(vectorA, vectorB):
+    """Recibe dos vectores y devuelve un vector con las máximas componentes presentes en los dos vectores."""
     x_max = max(vectorA[0], vectorB[0])
     y_max = max(vectorA[1], vectorB[1]) 
 

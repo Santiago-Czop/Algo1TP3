@@ -37,6 +37,8 @@ class EmptyStack(Exception):
     pass
 
 class _Nodo:
+	""" Representa un nodo con un dato y una conexión al elemento siguiente."""
 	def __init__(self, dato, prox = None):
+		""" Crea una instancia de Nodo."""
 		self.dato = dato
 		self.prox = prox
