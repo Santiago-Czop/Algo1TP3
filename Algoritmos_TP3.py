@@ -16,6 +16,9 @@ DISTANCIA_BASE = 100
 FACTOR_EXPANSION = 1.0
 
 def main():
+    """Ejecución del programa.
+    El programa recibe por la línea de comandos la ruta de un archivo con la información de un sistema-L, la cantidad de iteraciones y la ruta de un archivo svg.
+    Se crea un archivo svg con la codificación de la imagen generada. Si el archivo svg ya existe, se sobreescribe."""
     try:
         validar_parametros()
         angulo, axioma, reglas = cargar_archivo(argv[ARCHIVO_SL])
@@ -36,6 +39,7 @@ def main():
     crear_svg(argv[ARCHIVO_SVG], trazos, coordenada_min, coordenada_max)
 
 def validar_parametros():
+    """Si alguno de los parámetros recibidos por la línea de comandos falta o el valor no es válido, se eleva una excepción."""
     if len(argv) != 4:
         raise IndexError(f"El programa {argv[PROGRAMA]} debe recibir 3 parámetros.")
     elif argv[ARCHIVO_SL][-3:].lower() != ".sl":
@@ -46,6 +50,14 @@ def validar_parametros():
         raise Exception("El tercer parámetro debe ser el nombre de un archivo .svg")
 
 def cargar_archivo(ruta_archivo):
+    """Se recibe la ruta de una archivo con la información de un sistema-L con el siguiente formato:
+    <angulo>
+    <axioma>
+    <predecesor1> <sucesor1>
+    <predecesor2> <sucesor2>
+    <predecesor3> <sucesor3>
+    ...
+    Devuelve el ángulo (float), el axioma (cadena de caracteres) y un diccionario conteniendo las reglas, con el predecesor como clave y el sucesor como valor."""
     reglas = {}
     try:
         with open(ruta_archivo) as archivo:
@@ -67,15 +79,16 @@ def cargar_archivo(ruta_archivo):
         raise IOError(f"El archivo {ruta_archivo} no se encuentra disponible.")
 
 def obtener_resultado(cadena, reglas, cantidad):
+    """Recibe una cadena de caracteres, un diccionario con reglas y la cantidad de iteraciones (número entero mayor o igual a cero).
+    Devuelve la cadena de caracteres generada en base a los parámetros recibidos."""
     if cantidad == 0:
         return cadena
-    else:
-        resultado = ""
-        for c in cadena:
-            resultado += reglas.get(c, c)
-        cantidad -= 1
-        resultado = obtener_resultado(resultado, reglas, cantidad)
-        return resultado
+    resultado = ""
+    for c in cadena:
+        resultado += reglas.get(c, c)
+    cantidad -= 1
+    resultado = obtener_resultado(resultado, reglas, cantidad)
+    return resultado
 
 def analizar_secuencia(instrucciones, codificaciones):
     coordenada_min = Vector()
@@ -136,6 +149,8 @@ def calcular_max(vectorA, vectorB):
     return Vector(x_max, y_max)
 
 def crear_svg(ruta_archivo, trazos, coord_min, coord_max):
+    """Recibe la ruta de un archivo svg, un conjunto de objetos Trazo y las coordenadas mínimas y máximas, ambas objetos Vector.
+    Crea un archivo svg con la codificación de la imagen generada. Si el archivo svg ya existe, lo sobreescribe."""
     with open(ruta_archivo, 'w') as archivo:
         archivo.write(f'<svg viewBox="{coord_min[0]} {coord_min[1]} {coord_max[0] - coord_min[0]} {coord_max[1] - coord_min[1]}" xmlns="http://www.w3.org/2000/svg">' + "\n")
         for trazo in trazos:
