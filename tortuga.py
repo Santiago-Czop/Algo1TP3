@@ -43,11 +43,11 @@ class Tortuga:
 
     def conseguir_color(self):
         """ Devuelve el color de la pluma de la tortuga."""
-        return self.pluma.conseguir_grosor
+        return self.pluma.conseguir_color()
 
     def conseguir_grosor(self):
         """ Devuelve el grosor de la pluma de la tortuga."""
-        return self.pluma.conseguir_grosor
+        return self.pluma.conseguir_grosor()
 
 
 
