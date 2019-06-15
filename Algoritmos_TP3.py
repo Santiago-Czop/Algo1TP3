@@ -18,11 +18,31 @@ FACTOR_EXPANSION = 1.0
 def main():
     """Ejecución del programa.
     El programa recibe por la línea de comandos la ruta de un archivo con la información de un sistema-L, la cantidad de iteraciones y la ruta de un archivo svg.
+    Si alguno de los parámetros falta o el valor no es válido, se le muestra un mensaje al usuario y se interrumpe el programa.
     Se crea un archivo svg con la codificación de la imagen generada. Si el archivo svg ya existe, se sobreescribe."""
+
+    if len(argv) != 4:
+        print(f"El programa {argv[PROGRAMA]} debe recibir 3 parámetros.")
+        return
+    elif argv[ARCHIVO_SL][-3:].lower() != ".sl":
+        print("El primer parámetro debe ser el nombre de un archivo .sl")
+        return
+    elif not argv[ITERACIONES].isdigit():
+        print("El segundo parámetro debe ser un número entero mayor o igual a cero.")
+        return
+    elif argv[ARCHIVO_SVG][-4:].lower() != ".svg":
+        print("El tercer parámetro debe ser el nombre de un archivo .svg")
+        return
+
     try:
-        validar_parametros()
         angulo, axioma, reglas = cargar_archivo(argv[ARCHIVO_SL])
-    except Exception as e:
+    except FileNotFoundError:
+        print(f"El archivo {argv[ARCHIVO_SL]} no existe.")
+        return
+    except IOError:
+        print(f"El archivo {argv[ARCHIVO_SL]} no se encuentra disponible.")
+        return
+    except ValueError as e:
         print(e)
         return
 
@@ -32,22 +52,11 @@ def main():
         "|" : math.pi,
     }
 
-    resultado = obtener_resultado(axioma, reglas, int(argv[ITERACIONES]))
+    secuencia = obtener_secuencia(axioma, reglas, int(argv[ITERACIONES]))
 
-    trazos, coordenada_min, coordenada_max = analizar_secuencia(resultado, codificaciones)
+    trazos, coordenada_min, coordenada_max = analizar_secuencia(secuencia, codificaciones)
 
     crear_svg(argv[ARCHIVO_SVG], trazos, coordenada_min, coordenada_max)
-
-def validar_parametros():
-    """Si alguno de los parámetros recibidos por la línea de comandos falta o el valor no es válido, se eleva una excepción."""
-    if len(argv) != 4:
-        raise IndexError(f"El programa {argv[PROGRAMA]} debe recibir 3 parámetros.")
-    elif argv[ARCHIVO_SL][-3:].lower() != ".sl":
-        raise Exception("El primer parámetro debe ser el nombre de un archivo .sl")
-    elif not argv[ITERACIONES].isdigit():
-        raise TypeError("El segundo parámetro debe ser un número entero mayor o igual a cero.")
-    elif argv[ARCHIVO_SVG][-4:].lower() != ".svg":
-        raise Exception("El tercer parámetro debe ser el nombre de un archivo .svg")
 
 def cargar_archivo(ruta_archivo):
     """Se recibe la ruta de una archivo con la información de un sistema-L con el siguiente formato:
@@ -59,36 +68,31 @@ def cargar_archivo(ruta_archivo):
     ...
     Devuelve el ángulo (float), el axioma (cadena de caracteres) y un diccionario conteniendo las reglas, con el predecesor como clave y el sucesor como valor."""
     reglas = {}
-    try:
-        with open(ruta_archivo) as archivo:
-            lector = reader(archivo, delimiter = " ")
-            try:
-                angulo = float(archivo.readline().rstrip()) * math.pi / 180
-            except ValueError:
-                raise ValueError("El valor del ángulo no es válido.")
-            axioma = archivo.readline().rstrip()
-            try:
-                for predecesor, sucesor in lector:
-                    reglas[predecesor] = sucesor
-            except:
-                raise Exception("El formato de las reglas no es válido.")
-            return angulo, axioma, reglas
-    except FileNotFoundError:
-        raise FileNotFoundError(f"El archivo {ruta_archivo} no existe.")
-    except IOError:
-        raise IOError(f"El archivo {ruta_archivo} no se encuentra disponible.")
+    with open(ruta_archivo) as archivo:
+        lector = reader(archivo, delimiter = " ")
+        try:
+            angulo = float(archivo.readline().rstrip()) * math.pi / 180
+        except ValueError:
+            raise ValueError("El valor del ángulo no es válido.")
+        axioma = archivo.readline().rstrip()
+        try:
+            for predecesor, sucesor in lector:
+                reglas[predecesor] = sucesor
+        except ValueError:
+            raise ValueError("El formato de las reglas no es válido.")
+        return angulo, axioma, reglas
 
-def obtener_resultado(cadena, reglas, cantidad):
-    """Recibe una cadena de caracteres, un diccionario con reglas y la cantidad de iteraciones (número entero mayor o igual a cero).
-    Devuelve la cadena de caracteres generada en base a los parámetros recibidos."""
-    if cantidad == 0:
-        return cadena
-    resultado = ""
-    for c in cadena:
-        resultado += reglas.get(c, c)
-    cantidad -= 1
-    resultado = obtener_resultado(resultado, reglas, cantidad)
-    return resultado
+def obtener_secuencia(axioma, reglas, iteraciones):
+    """Recibe un axioma (cadena de caracteres), un diccionario con reglas de transformación y la cantidad de iteraciones a procesar (número entero mayor o igual a cero).
+    Devuelve la cadena de caracteres resultante de reemplazar cada caracter del axioma por los caracteres incluidos en las reglas de transformación, la cantidad de veces indicada en el parámetro iteraciones."""
+    if iteraciones == 0:
+        return axioma
+    for n in range(iteraciones):
+        secuencia = ""
+        for c in axioma:
+            secuencia += reglas.get(c, c)
+        axioma = secuencia
+    return secuencia
 
 def analizar_secuencia(instrucciones, codificaciones):
     coordenada_min = Vector()
