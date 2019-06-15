@@ -15,7 +15,7 @@ class Pila:
 	def desapilar(self):
 		"""Desapila el elemento que se encuentra en el tope de la pila y lo devuelve. Si la pila está vacía, se muestra un mensaje."""
 		if self.esta_vacia():
-			raise EmptyStack("La pila no tiene elementos.")
+			raise EmptyStackError("La pila no tiene elementos.")
 		self.len -= 1
 		elemento = self.tope.dato
 		self.tope = self.tope.prox
@@ -33,7 +33,7 @@ class Pila:
 		"""Devuelve la cantidad de elementos que se encuentran en la pila."""
 		return self.len
 
-class EmptyStack(Exception):
+class EmptyStackError(Exception):
     pass
 
 class _Nodo:

@@ -15,40 +15,38 @@ ARCHIVO_SVG = 3
 
 DISTANCIA_BASE = 100 #Distancia avanzada por la primer tortuga
 FACTOR_EXPANSION = 1.0 #Porcentaje como decimal de incremento o disminución de la distancia avanzada por cada tortuga apilada
-MARGEN = 50
+
+COLORS = {
+    "a": "#F44336", #Material Red
+    "b": "#FF5722", #Material Deep Orange
+    "c": "#FF9800", #Material Orange
+    "d": "#FFC107", #Material Amber
+    "e": "#FFEB3B", #Material Yellow
+    "f": "#CDDC39", #Material Lime
+    "g": "#8BC34A", #Material Light Green
+    "h": "#4CAF50", #Material Green
+    "i": "#009688", #Material Teal
+    "j": "#00BCD4", #Material Cyan
+    "k": "#03A9F4", #Material Light Blue
+    "l": "#2196F3", #Material Blue
+    "m": "#3F51B5", #Material Indigo
+    "n": "#673AB7", #Material Deep Purple
+    "o": "#9C27B0", #Material Purple
+    "p": "#E91E63", #Material Pink
+    "q": "#795548", #Material Brown
+    "r": "#607D8B", #Material Blue Grey
+    "s": "#9E9E9E", #Material Grey
+    "t": "#000000", #Black
+}
 
 def main():
-    """ Ejecución del programa.
-    El programa recibe por la línea de comandos la ruta de un archivo con la información de un sistema-L, 
-    la cantidad de iteraciones y la ruta de un archivo svg.
-    Si alguno de los parámetros falta o el valor no es válido, se le muestra un mensaje al usuario
-    y se interrumpe el programa.
-    Se crea un archivo svg con la codificación de la imagen generada.
-    Si el archivo svg ya existe, se sobreescribe.
-    """
-
-    if len(argv) != 4:
-        print(f"El programa {argv[PROGRAMA]} debe recibir 3 parámetros.")
-        return
-    elif argv[ARCHIVO_SL][-3:].lower() != ".sl":
-        print("El primer parámetro debe ser el nombre de un archivo .sl")
-        return
-    elif not argv[ITERACIONES].isdigit():
-        print("El segundo parámetro debe ser un número entero mayor o igual a cero.")
-        return
-    elif argv[ARCHIVO_SVG][-4:].lower() != ".svg":
-        print("El tercer parámetro debe ser el nombre de un archivo .svg")
-        return
-
+    """Ejecución del programa.
+    El programa recibe por la línea de comandos la ruta de un archivo con la información de un sistema-L, la cantidad de iteraciones y la ruta de un archivo svg.
+    Se crea un archivo svg con la codificación de la imagen generada. Si el archivo svg ya existe, se sobreescribe."""
     try:
+        validar_parametros()
         angulo, axioma, reglas = cargar_archivo(argv[ARCHIVO_SL])
-    except FileNotFoundError:
-        print(f"El archivo {argv[ARCHIVO_SL]} no existe.")
-        return
-    except IOError:
-        print(f"El archivo {argv[ARCHIVO_SL]} no se encuentra disponible.")
-        return
-    except ValueError as e:
+    except Exception as e:
         print(e)
         return
 
@@ -58,15 +56,14 @@ def main():
         "|" : math.pi,
     }
 
-    secuencia = obtener_secuencia(axioma, reglas, int(argv[ITERACIONES]))
+    resultado = obtener_resultado(axioma, reglas, int(argv[ITERACIONES]))
 
-    trazos, coordenada_min, coordenada_max = analizar_secuencia(secuencia, codificaciones)
+    trazos, coordenada_min, coordenada_max = analizar_secuencia(resultado, codificaciones)
 
     crear_svg(argv[ARCHIVO_SVG], trazos, coordenada_min, coordenada_max)
 
 def validar_parametros():
-    """ Si alguno de los parámetros recibidos por la línea de comandos falta o el valor no es válido,
-    se eleva una excepción."""
+    """Si alguno de los parámetros recibidos por la línea de comandos falta o el valor no es válido, se eleva una excepción."""
     if len(argv) != 4:
         raise IndexError(f"El programa {argv[PROGRAMA]} debe recibir 3 parámetros.")
     elif argv[ARCHIVO_SL][-3:].lower() != ".sl":
@@ -77,51 +74,50 @@ def validar_parametros():
         raise Exception("El tercer parámetro debe ser el nombre de un archivo .svg")
 
 def cargar_archivo(ruta_archivo):
-    """ Se recibe la ruta de una archivo con la información de un sistema-L con el siguiente formato:
+    """Se recibe la ruta de una archivo con la información de un sistema-L con el siguiente formato:
     <angulo>
     <axioma>
     <predecesor1> <sucesor1>
     <predecesor2> <sucesor2>
     <predecesor3> <sucesor3>
     ...
-    Devuelve el ángulo (float), el axioma (cadena de caracteres) y un diccionario conteniendo las reglas,
-    con el predecesor como clave y el sucesor como valor.
-    """
+    Devuelve el ángulo (float), el axioma (cadena de caracteres) y un diccionario conteniendo las reglas, con el predecesor como clave y el sucesor como valor."""
     reglas = {}
-    with open(ruta_archivo) as archivo:
-        lector = reader(archivo, delimiter = " ")
-        try:
-            angulo = float(archivo.readline().rstrip()) * math.pi / 180
-        except ValueError:
-            raise ValueError("El valor del ángulo no es válido.")
-        axioma = archivo.readline().rstrip()
-        try:
-            for predecesor, sucesor in lector:
-                reglas[predecesor] = sucesor
-        except ValueError:
-            raise ValueError("El formato de las reglas no es válido.")
-        return angulo, axioma, reglas
+    try:
+        with open(ruta_archivo) as archivo:
+            lector = reader(archivo, delimiter = " ")
+            try:
+                angulo = float(archivo.readline().rstrip()) * math.pi / 180
+            except ValueError:
+                raise ValueError("El valor del ángulo no es válido.")
+            axioma = archivo.readline().rstrip()
+            try:
+                for predecesor, sucesor in lector:
+                    reglas[predecesor] = sucesor
+            except:
+                raise Exception("El formato de las reglas no es válido.")
+            return angulo, axioma, reglas
+    except FileNotFoundError:
+        raise FileNotFoundError(f"El archivo {ruta_archivo} no existe.")
+    except IOError:
+        raise IOError(f"El archivo {ruta_archivo} no se encuentra disponible.")
 
-def obtener_secuencia(axioma, reglas, iteraciones):
-    """ Recibe un axioma (cadena de caracteres), un diccionario con reglas de transformación
-    y la cantidad de iteraciones a procesar (número entero mayor o igual a cero).
-    Devuelve la cadena de caracteres resultante de reemplazar cada caracter del axioma
-    por los caracteres incluidos en las reglas de transformación,
-    la cantidad de veces indicada en el parámetro iteraciones.
-    """
-    if iteraciones == 0:
-        return axioma
-    for n in range(iteraciones):
-        secuencia = ""
-        for c in axioma:
-            secuencia += reglas.get(c, c)
-        axioma = secuencia
-    return secuencia
+def obtener_resultado(cadena, reglas, cantidad):
+    """Recibe una cadena de caracteres, un diccionario con reglas y la cantidad de iteraciones (número entero mayor o igual a cero).
+    Devuelve la cadena de caracteres generada en base a los parámetros recibidos."""
+    if cantidad == 0:
+        return cadena
+    resultado = ""
+    for c in cadena:
+        resultado += reglas.get(c, c)
+    cantidad -= 1
+    resultado = obtener_resultado(resultado, reglas, cantidad)
+    return resultado
 
 def analizar_secuencia(instrucciones, codificaciones):
-    """ Recibe un string con instrucciones y un diccionario que contiene la codificación
-    para algunas instrucciones variables. Devuelve un set de trazos correspondientes al análisis
-    del string, la distancia máxima y la distancia mínima con la que ha de crearse el svg.
+    """ Recibe un string con instrucciones y un diccionario que contiene la codificación para algunas instrucciones variables. 
+    Devuelve un set de trazos correspondientes al análisis del string, la distancia máxima y la distancia mínima con la que ha de crearse
+    el svg.
     """
     coordenada_min = Vector()
     coordenada_max = Vector()
@@ -160,11 +156,18 @@ def analizar_secuencia(instrucciones, codificaciones):
 
             trazos.add(nuevo_trazo)
         elif c == "f":
+            tortuga_tope.levantar_pluma()
             tortuga_tope.avanzar(DISTANCIA_BASE * (FACTOR_EXPANSION ** profundidad))
+            tortuga_tope.bajar_pluma()
         elif c in "+-|":
             tortuga_tope.girar(codificaciones[c])
+        elif c in COLORS:
+            tortuga_tope.cambiar_color_pluma(COLORS[c])
+        elif c in "0123456789":
+            print(c)
+            tortuga_tope.cambiar_grosor_pluma(c)
         
-    return trazos, coordenada_min + Vector(-MARGEN, -MARGEN), coordenada_max + Vector(MARGEN, MARGEN)
+    return trazos, coordenada_min + Vector(-50, -50), coordenada_max + Vector(50, 50)
 
 def calcular_min(vectorA, vectorB):
     """Recibe dos vectores y devuelve un vector con las mínimas componentes presentes en los dos vectores."""
@@ -188,5 +191,4 @@ def crear_svg(ruta_archivo, trazos, coord_min, coord_max):
         for trazo in trazos:
             archivo.write(f'<line x1="{trazo.coord_inicial[0]}" y1="{trazo.coord_inicial[1]}" x2="{trazo.coord_final[0]}" y2="{trazo.coord_final[1]}" stroke-width="{trazo.grosor}" stroke="{trazo.color}" />' + "\n")
         archivo.write('</svg>' + "\n")
-
 main()

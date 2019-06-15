@@ -1,26 +1,28 @@
 import math
 
 class Vector:
-    """ Vector 
+    """ Vector de R2
 
     Attributes:
         coordenadas (tuple): tupla que contiene cada componente del vector.
     """
 
-    def __init__(self, *coordenadas):
-        """ Crea una instancia del vector.
+    def __init__(self, x = 0, y = 0):
+        """ Crea una instancia del vector en R2.
 
         Si no se pasan argumentos, se crea una instancia del vector nulo de R2.
 
         Args:
-            *coordenadas (float): valor de cada componente, por separado.  
+            x (float): primera componente.
+            y (float): segunda componente.
         """
-        self.coordenadas = tuple(coordenadas) if len(coordenadas) > 0 else (0, 0)
+        self.coordenadas = (x, y)
     
     def __add__(self, vector):
         """ Devuelve la suma de self y vector."""
-        suma = tuple(a + b for a, b in zip(self, vector))
-        return Vector(*suma)
+        x = self[0] + vector[0]
+        y = self[1] + vector[1]
+        return Vector(x, y)
 
     def __getitem__(self, componente):
         """ Devuelve el valor de la componente pedida."""

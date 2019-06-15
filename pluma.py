@@ -1,11 +1,5 @@
 class Pluma:
-    """ Pluma para la tortuga.
-
-    Attributes:
-        color (string): color en formato RGB.
-        grosor (int): ancho del trazo.
-        estado (bool): booleano representando si la pluma esta apoyada, True, o levantada, False.
-    """
+    """ Pluma para la tortuga."""
     def __init__(self, color="#000000", grosor=1, estado=True):
         """ Crea una instancia de Pluma.
 
